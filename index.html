@@ -4,6 +4,16 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Sepolia Tools — Add Token / Mint / Faucet</title>
+<meta name="description" content="Fix MetaMask 'imported token not showing' on Sepolia. Add & mint test ERC-20 tokens (USDT) that actually appear in your wallet — one click, no install."/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Sepolia Tools — fix MetaMask token not showing"/>
+<meta property="og:description" content="Add & mint test ERC-20 tokens on Sepolia that actually appear in MetaMask. One click, runs in the browser."/>
+<meta property="og:url" content="https://tonydisco.github.io/sepolia-tools/"/>
+<meta property="og:image" content="https://tonydisco.github.io/sepolia-tools/docs/og.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Sepolia Tools — fix MetaMask token not showing"/>
+<meta name="twitter:description" content="Add & mint test ERC-20 tokens on Sepolia that actually appear in MetaMask. One click, runs in the browser."/>
+<meta name="twitter:image" content="https://tonydisco.github.io/sepolia-tools/docs/og.png"/>
 <style>
   :root{color-scheme:light dark}
   body{font-family:system-ui,Arial,sans-serif;max-width:640px;margin:32px auto;padding:0 16px;line-height:1.5}
@@ -24,6 +34,13 @@
 <body>
 <h1>🦊 Sepolia Tools</h1>
 <p class="muted">Local helper page: connect MetaMask, add tokens (via wallet_watchAsset), view balances, mint test USDT, and reach Sepolia ETH faucets.</p>
+
+<div id="deeplink" style="display:none;border:1px solid #4a90d9;border-radius:10px;padding:14px 16px;margin:12px 0;background:#4a90d915">
+  <div class="bal" id="dlTitle">Add this token to MetaMask</div>
+  <div class="mono" id="dlInfo" style="margin:6px 0"></div>
+  <button id="dlAdd">➕ Add token to MetaMask</button>
+  <span class="muted">Shareable link: pre-filled from the URL.</span>
+</div>
 
 <h2>Connect &amp; balances</h2>
 <button id="connect">Connect MetaMask</button>
@@ -170,6 +187,27 @@ if(window.ethereum){
   window.ethereum.on && window.ethereum.on('accountsChanged', (a)=>{ account=a[0]||null; document.getElementById('acct').textContent='Account: '+(account||'—'); refresh(); });
   window.ethereum.on && window.ethereum.on('chainChanged', ()=>location.reload());
 }
+
+// Deep link: ?address=0x..&symbol=USDC&decimals=6 — prefill and offer a one-click add.
+(function(){
+  const p = new URLSearchParams(location.search);
+  const addr = (p.get('address')||'').trim();
+  const sym  = (p.get('symbol')||'').trim();
+  const dec  = (p.get('decimals')||'18').trim();
+  if(!/^0x[0-9a-fA-F]{40}$/.test(addr)) return;
+  // Prefill the custom-token form too.
+  document.getElementById('ctAddr').value = addr;
+  if(sym) document.getElementById('ctSym').value = sym;
+  document.getElementById('ctDec').value = dec;
+  const box = document.getElementById('deeplink');
+  document.getElementById('dlTitle').textContent = 'Add ' + (sym||'token') + ' to MetaMask';
+  document.getElementById('dlInfo').textContent = addr + ' · symbol ' + (sym||'?') + ' · decimals ' + dec;
+  box.style.display = 'block';
+  document.getElementById('dlAdd').onclick = () => {
+    if(sym) watch(addr, sym, dec);
+    else log('This link has no symbol — fill it in the "Add a custom token" section below.');
+  };
+})();
 </script>
 </body>
 </html>

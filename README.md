@@ -1,15 +1,26 @@
 # 🦊 Sepolia Tools
 
+> **Fix MetaMask's "imported token not showing" on Sepolia** — add & mint test ERC-20 tokens that *actually appear* in your wallet. One click, runs in the browser.
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-tonydisco.github.io-2ea44f?logo=github)](https://tonydisco.github.io/sepolia-tools/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Network: Sepolia](https://img.shields.io/badge/Network-Sepolia-627EEA?logo=ethereum&logoColor=white)](https://sepolia.etherscan.io/)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/tonydisco/sepolia-tools/pulls)
+
 **English** · [Tiếng Việt ↓](#-tiếng-việt)
 
-A **local** helper page for working with a MetaMask wallet on the **Sepolia testnet**:
+**👉 [Open the live app](https://tonydisco.github.io/sepolia-tools/)** — no install, just connect MetaMask.
 
-- Connect MetaMask, view **ETH** and **USDT** balances in real time
-- **Add tokens** to MetaMask via `wallet_watchAsset` (works around MetaMask's manual-import bug where a token shows "added" but never appears)
-- **Mint test USDT** directly by calling the token contract
-- Quick links to **faucets** for Sepolia ETH
+Ever imported a token in MetaMask, seen *"Token was successfully added"*, but it never shows up in your token list? This page fixes exactly that — it adds tokens through `wallet_watchAsset` (the reliable path) instead of the buggy manual import. It also lets you **mint test USDT** and reach **Sepolia faucets**, all from one static page.
 
-Everything runs offline on your machine (a single static HTML file + a simple HTTP server). No backend, no data collection.
+**What it does**
+- ✅ Add tokens to MetaMask via `wallet_watchAsset` — works when manual import silently fails
+- 🪙 Mint test USDT by calling the contract
+- 💰 View ETH / USDT balances live
+- 🚰 One-click faucet links for Sepolia ETH
+- 🔗 Shareable add-token links: `?address=0x..&symbol=USDC&decimals=6`
+
+Everything runs in your browser (a single static HTML file). No backend, no data collection.
 
 ![Sepolia Tools screenshot](docs/screenshot.png)
 
@@ -68,8 +79,10 @@ sepolia-tools/
 ├── index.html        # the whole app (UI + logic)
 ├── start.sh          # start the server + open the browser
 ├── README.md         # this file (English + Vietnamese)
+├── LICENSE           # MIT
 ├── docs/
-│   └── screenshot.png
+│   ├── screenshot.png
+│   └── og.png        # social preview image
 └── .gitignore
 ```
 
@@ -90,14 +103,20 @@ sepolia-tools/
 
 [↑ English](#-sepolia-tools) · **Tiếng Việt**
 
-Trang trợ giúp **local** để làm việc với ví MetaMask trên mạng **Sepolia testnet**:
+> **Sửa lỗi MetaMask "token đã import nhưng không hiện" trên Sepolia** — thêm & mint token ERC-20 test sao cho *thực sự hiện ra* trong ví. Một cú click, chạy thẳng trên trình duyệt.
 
-- Kết nối MetaMask, xem số dư **ETH** và **USDT** real-time
-- **Thêm token** vào MetaMask qua `wallet_watchAsset` (khắc phục lỗi import thủ công bị treo của MetaMask)
-- **Mint USDT** trực tiếp bằng cách gọi hàm contract
-- Link nhanh tới các **faucet** lấy Sepolia ETH
+**👉 [Mở app trực tiếp](https://tonydisco.github.io/sepolia-tools/)** — không cần cài, chỉ cần connect MetaMask.
 
-Toàn bộ chạy offline ở máy bạn (một file HTML tĩnh + server HTTP đơn giản). Không có backend, không thu thập dữ liệu.
+Bạn từng import token vào MetaMask, thấy báo *"Token was successfully added"* nhưng token không hề xuất hiện? Trang này sửa đúng vấn đề đó — thêm token qua `wallet_watchAsset` (cách đáng tin) thay vì import thủ công bị bug. Ngoài ra còn **mint USDT test** và link nhanh tới **faucet** Sepolia.
+
+**Tính năng**
+- ✅ Thêm token qua `wallet_watchAsset` — chạy được cả khi import thủ công thất bại
+- 🪙 Mint USDT test bằng cách gọi contract
+- 💰 Xem số dư ETH / USDT real-time
+- 🚰 Link faucet Sepolia ETH một chạm
+- 🔗 Link chia sẻ add-token: `?address=0x..&symbol=USDC&decimals=6`
+
+Toàn bộ chạy trên trình duyệt (một file HTML tĩnh). Không có backend, không thu thập dữ liệu.
 
 ## 🚀 Chạy ngay
 
