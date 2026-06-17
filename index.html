@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Sepolia Tools — Add Token / Faucet</title>
+<title>Sepolia Tools — Add Token / Mint / Faucet</title>
 <style>
   :root{color-scheme:light dark}
   body{font-family:system-ui,Arial,sans-serif;max-width:640px;margin:32px auto;padding:0 16px;line-height:1.5}
@@ -23,43 +23,43 @@
 </head>
 <body>
 <h1>🦊 Sepolia Tools</h1>
-<p class="muted">Trang trợ giúp local: kết nối MetaMask, thêm token (qua wallet_watchAsset), xem số dư, và lấy Sepolia ETH từ faucet.</p>
+<p class="muted">Local helper page: connect MetaMask, add tokens (via wallet_watchAsset), view balances, mint test USDT, and reach Sepolia ETH faucets.</p>
 
-<h2>Kết nối & số dư</h2>
+<h2>Connect &amp; balances</h2>
 <button id="connect">Connect MetaMask</button>
 <button id="refresh">Refresh balances</button>
 <div class="bal" id="acct">Account: —</div>
 <div class="bal" id="ethBal">ETH: —</div>
 <div class="bal" id="usdtBal">USDT: —</div>
 
-<h2>Thêm USDT (Test Tether USD)</h2>
+<h2>Add USDT (Test Tether USD)</h2>
 <p class="mono">0x7169d38820dfd117c3fa1f22a697dba58d90ba06 · symbol USDT · decimals 6</p>
 <button id="addUsdt">Add USDT token</button>
 
-<h2>Mint USDT (faucet bằng cách gọi contract)</h2>
-<p class="muted">Gọi hàm <span class="mono">_giveMeTokens</span> (selector 0xf5e3f1f7) — tạo USDT mới vào ví bạn. Cần một ít Sepolia ETH để trả gas.</p>
+<h2>Mint USDT (faucet by calling the contract)</h2>
+<p class="muted">Calls the <span class="mono">_giveMeTokens</span> function (selector 0xf5e3f1f7) — creates new USDT into your wallet. Requires a little Sepolia ETH for gas.</p>
 <div class="row">
-  <input id="mintAmt" placeholder="Số USDT muốn mint (vd 1000)" value="1000"/>
+  <input id="mintAmt" placeholder="Amount of USDT to mint (e.g. 1000)" value="1000"/>
   <button id="mintUsdt">Mint USDT</button>
 </div>
-<p class="muted">App tự nhân ×10⁶ giúp bạn. Lưu ý: contract có thể giới hạn lượng mint mỗi lần — bấm Refresh để xem số dư thực tế sau khi tx confirmed.</p>
+<p class="muted">The app multiplies by ×10⁶ for you. Note: the contract may cap the amount per call — click Refresh to see the actual balance after the tx is confirmed.</p>
 
-<h2>Thêm token tùy ý</h2>
+<h2>Add a custom token</h2>
 <input id="ctAddr" placeholder="Contract address (0x...)"/>
 <div class="row">
-  <input id="ctSym" placeholder="Symbol (vd USDC)"/>
-  <input id="ctDec" placeholder="Decimals (vd 6)" value="18"/>
+  <input id="ctSym" placeholder="Symbol (e.g. USDC)"/>
+  <input id="ctDec" placeholder="Decimals (e.g. 6)" value="18"/>
 </div>
 <button id="addCustom">Add custom token</button>
 
-<h2>Lấy Sepolia ETH (faucet)</h2>
-<p class="muted">ETH gốc không mint được từ contract — chỉ lấy qua faucet. Bấm để mở:</p>
+<h2>Get Sepolia ETH (faucets)</h2>
+<p class="muted">Native ETH cannot be minted from a contract — get it from a faucet. Click to open:</p>
 <a class="faucet" href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" target="_blank">Google Cloud Faucet</a>
 <a class="faucet" href="https://sepolia-faucet.pk910.de/" target="_blank">PoW Faucet (pk910)</a>
 <a class="faucet" href="https://www.alchemy.com/faucets/ethereum-sepolia" target="_blank">Alchemy Faucet</a>
 <a class="faucet" href="https://faucet.quicknode.com/ethereum/sepolia" target="_blank">QuickNode Faucet</a>
-<p class="muted">Mẹo: copy địa chỉ ví bên dưới rồi dán vào faucet.</p>
-<button id="copyAddr">Copy địa chỉ ví</button>
+<p class="muted">Tip: copy your wallet address below, then paste it into a faucet.</p>
+<button id="copyAddr">Copy wallet address</button>
 
 <h2>Log</h2>
 <pre id="log">Ready.
@@ -84,26 +84,26 @@ function fmtUnits(hex, decimals){
 async function ensureSepolia(){
   const chainId = await window.ethereum.request({method:'eth_chainId'});
   if(chainId !== SEPOLIA){
-    log('chainId '+chainId+' ≠ Sepolia, đang chuyển...');
+    log('chainId '+chainId+' is not Sepolia, switching...');
     await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:SEPOLIA}]});
   }
 }
 
 async function refresh(){
   if(!window.ethereum){ log('ERROR: MetaMask not found.'); return; }
-  if(!account){ log('Hãy Connect trước.'); return; }
+  if(!account){ log('Please Connect first.'); return; }
   try{
     const ethHex = await window.ethereum.request({method:'eth_getBalance', params:[account,'latest']});
     document.getElementById('ethBal').textContent = 'ETH: ' + fmtUnits(ethHex,18) + ' SepoliaETH';
     const data = '0x70a08231' + account.slice(2).toLowerCase().padStart(64,'0');
     const usdtHex = await window.ethereum.request({method:'eth_call', params:[{to:USDT, data:data},'latest']});
     document.getElementById('usdtBal').textContent = 'USDT: ' + fmtUnits(usdtHex,6) + ' USDT';
-    log('Đã cập nhật số dư.');
+    log('Balances updated.');
   }catch(e){ log('refresh error: '+(e.message||e)); }
 }
 
 document.getElementById('connect').onclick = async () => {
-  if(!window.ethereum){ log('ERROR: window.ethereum not found (MetaMask chưa inject vào trang).'); return; }
+  if(!window.ethereum){ log('ERROR: window.ethereum not found (MetaMask not injected into this page).'); return; }
   try{
     const accts = await window.ethereum.request({method:'eth_requestAccounts'});
     account = accts[0];
@@ -123,7 +123,7 @@ async function watch(address, symbol, decimals){
       method:'wallet_watchAsset',
       params:{ type:'ERC20', options:{ address, symbol, decimals: Number(decimals) } }
     });
-    log(ok ? ('SUCCESS: đã thêm '+symbol) : 'User rejected.');
+    log(ok ? ('SUCCESS: added '+symbol) : 'User rejected.');
     if(ok) refresh();
   }catch(e){ log('watchAsset error: '+(e.message||e)); }
 }
@@ -133,36 +133,37 @@ document.getElementById('addUsdt').onclick = () => watch(USDT,'USDT',6);
 const MINT_SELECTOR = '0xf5e3f1f7'; // _giveMeTokens(uint256) — verified from on-chain tx input
 document.getElementById('mintUsdt').onclick = async () => {
   if(!window.ethereum){ log('ERROR: MetaMask not found.'); return; }
-  if(!account){ log('Hãy Connect trước.'); return; }
+  if(!account){ log('Please Connect first.'); return; }
   const whole = document.getElementById('mintAmt').value.trim();
-  if(!/^\d+$/.test(whole) || BigInt(whole) <= 0n){ log('Nhập số USDT nguyên dương.'); return; }
+  if(!/^\d+$/.test(whole) || BigInt(whole) <= 0n){ log('Enter a positive integer amount of USDT.'); return; }
   const base = BigInt(whole) * (10n ** 6n);
   const data = MINT_SELECTOR + base.toString(16).padStart(64,'0');
   try{
     await ensureSepolia();
-    log('Đang gửi mint '+whole+' USDT (base '+base.toString()+')... xác nhận trong MetaMask.');
+    log('Sending mint of '+whole+' USDT (base '+base.toString()+')... confirm in MetaMask.');
     const txHash = await window.ethereum.request({
       method:'eth_sendTransaction',
       params:[{ from: account, to: USDT, data: data }]
     });
     log('Mint tx sent: '+txHash);
-    log('Đợi ~15s rồi bấm "Refresh balances".');
+    log('Wait ~15s, then click "Refresh balances".');
     setTimeout(refresh, 15000);
   }catch(e){ log('mint error: '+(e.message||e)); }
 };
+
 document.getElementById('addCustom').onclick = () => {
   const a=document.getElementById('ctAddr').value.trim();
   const s=document.getElementById('ctSym').value.trim();
   const d=document.getElementById('ctDec').value.trim()||'18';
-  if(!/^0x[0-9a-fA-F]{40}$/.test(a)){ log('Địa chỉ contract không hợp lệ.'); return; }
-  if(!s){ log('Nhập symbol.'); return; }
+  if(!/^0x[0-9a-fA-F]{40}$/.test(a)){ log('Invalid contract address.'); return; }
+  if(!s){ log('Enter a symbol.'); return; }
   watch(a,s,d);
 };
 
 document.getElementById('copyAddr').onclick = async () => {
-  if(!account){ log('Connect trước đã.'); return; }
-  try{ await navigator.clipboard.writeText(account); log('Đã copy: '+account); }
-  catch(e){ log('Copy thủ công: '+account); }
+  if(!account){ log('Connect first.'); return; }
+  try{ await navigator.clipboard.writeText(account); log('Copied: '+account); }
+  catch(e){ log('Copy manually: '+account); }
 };
 
 if(window.ethereum){
