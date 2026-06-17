@@ -1,5 +1,7 @@
 # 🦊 Sepolia Tools
 
+🌐 **Tiếng Việt** · [English](README.en.md)
+
 Trang trợ giúp **local** để làm việc với ví MetaMask trên mạng **Sepolia testnet**:
 
 - Kết nối MetaMask, xem số dư **ETH** và **USDT** real-time
