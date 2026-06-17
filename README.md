@@ -9,6 +9,8 @@ Trang trợ giúp **local** để làm việc với ví MetaMask trên mạng **
 
 Toàn bộ chạy offline ở máy bạn (một file HTML tĩnh + server HTTP đơn giản). Không có backend, không thu thập dữ liệu.
 
+![Sepolia Tools screenshot](docs/screenshot.png)
+
 ---
 
 ## 🚀 Chạy ngay
